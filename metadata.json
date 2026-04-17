@@ -1,0 +1,6 @@
+{
+  "name": "NeuroLens AI",
+  "description": "High-precision Brain Tumor Segmentation platform using TransUNet architecture for clinical neuro-oncological imaging analysis.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
