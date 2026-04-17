@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { BrainCircuit, Cpu, Zap, Microscope, Search, CheckCircle2, Loader2 } from 'lucide-react';
+import { BrainCircuit, Cpu, Zap, Microscope, Search, CheckCircle2, Loader2, Activity } from 'lucide-react';
+import { cn } from '../../lib/utils';
 
 export default function Processing() {
   const [step, setStep] = useState(0);
@@ -20,51 +21,69 @@ export default function Processing() {
   }, [steps.length]);
 
   return (
-    <div className="min-h-[60vh] flex flex-col items-center justify-center p-12 max-w-2xl mx-auto">
-      <div className="relative mb-16">
-        <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150 animate-pulse" />
+    <div className="min-h-[70vh] flex flex-col items-center justify-center p-12 max-w-2xl mx-auto space-y-16">
+      <div className="relative">
+        <div className="absolute inset-0 bg-primary/10 blur-[100px] rounded-full scale-150 animate-pulse" />
         <motion.div 
           animate={{ rotate: 360 }}
-          transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-          className="relative w-48 h-48 rounded-full border-4 border-dashed border-primary/30 flex items-center justify-center"
+          transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+          className="relative w-56 h-56 rounded-full border border-dashed border-primary/20 flex items-center justify-center"
         >
-          <div className="w-40 h-40 rounded-full border-4 border-primary border-t-transparent animate-spin" />
+          <div className="absolute inset-0 rounded-full border-2 border-primary border-t-transparent animate-spin [animation-duration:3s]" />
+          <div className="absolute inset-4 rounded-full border border-secondary/30 border-b-transparent animate-spin [animation-duration:5s] [animation-direction:reverse]" />
         </motion.div>
         <div className="absolute inset-0 flex items-center justify-center">
-          <BrainCircuit className="w-16 h-16 text-primary" />
+          <BrainCircuit className="w-20 h-20 text-primary cyber-glow" />
         </div>
       </div>
 
-      <div className="w-full space-y-8 text-center">
+      <div className="w-full space-y-12 text-center">
         <div className="space-y-4">
-          <h2 className="text-3xl font-black text-primary font-headline tracking-tighter">Analyzing Neural Structures</h2>
-          <p className="text-on-surface-variant font-medium">Please wait while our hybrid transformer model processes the multi-modal scans.</p>
+          <div className="flex items-center justify-center gap-2 text-secondary mb-2 uppercase tracking-[0.4em] font-black text-[10px]">
+            <Activity className="w-3 h-3" />
+            Active Compute
+          </div>
+          <h2 className="text-4xl font-black text-on-surface uppercase tracking-tight font-headline">Neural <span className="text-primary cyber-glow italic">Architect</span></h2>
+          <p className="text-[10px] font-mono text-on-surface-variant uppercase tracking-widest leading-relaxed max-w-md mx-auto opacity-70">
+            [SYS] :: Hybrid TransUNet core parsing 3D tensor data. Global context attention mapping active.
+          </p>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-4 text-left">
           {steps.map((s, i) => (
-            <div key={i} className="flex items-center gap-4 text-left">
-              <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center">
+            <div key={i} className="group flex items-center gap-6 p-4 rounded bg-surface-container/30 border border-transparent transition-all">
+              <div className={cn(
+                "flex-shrink-0 w-10 h-10 rounded border flex items-center justify-center transition-all",
+                i < step ? "bg-secondary/10 border-secondary text-secondary" : 
+                i === step ? "bg-primary/5 border-primary text-primary animate-pulse" : 
+                "bg-black/20 border-outline/5 text-outline/20"
+              )}>
                 {i < step ? (
-                  <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                  <CheckCircle2 className="w-5 h-5" />
                 ) : i === step ? (
-                  <Loader2 className="w-5 h-5 text-primary animate-spin" />
+                  <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
-                  <s.icon className="w-4 h-4 text-outline" />
+                  <s.icon className="w-5 h-5" />
                 )}
               </div>
-              <div className="flex-1">
-                <div className="flex justify-between items-center mb-1">
-                  <span className={`text-sm font-bold ${i <= step ? 'text-on-surface' : 'text-outline/50'}`}>
+              <div className="flex-1 space-y-2">
+                <div className="flex justify-between items-end">
+                  <span className={cn(
+                    "text-[10px] font-black uppercase tracking-widest",
+                    i <= step ? "text-on-surface" : "text-on-surface-variant opacity-30"
+                  )}>
                     {s.label}
                   </span>
-                  {i === step && <span className="text-[10px] font-black text-primary animate-pulse uppercase">Active</span>}
+                  {i === step && <span className="text-[9px] font-mono text-primary animate-pulse uppercase">Processing...</span>}
                 </div>
-                <div className="h-1 w-full bg-surface-container rounded-full overflow-hidden">
+                <div className="h-1 w-full bg-black/40 rounded-full overflow-hidden border border-outline/5">
                   <motion.div 
                     initial={{ width: 0 }}
-                    animate={{ width: i < step ? '100%' : i === step ? '60%' : '0%' }}
-                    className="h-full bg-primary"
+                    animate={{ width: i < step ? '100%' : i === step ? '65%' : '0%' }}
+                    className={cn(
+                        "h-full",
+                        i < step ? "bg-secondary shadow-[0_0_10px_#39ff14]" : "bg-primary shadow-[0_0_10px_#00f2ff]"
+                    )}
                   />
                 </div>
               </div>
@@ -72,15 +91,19 @@ export default function Processing() {
           ))}
         </div>
 
-        <div className="pt-8 border-t border-outline-variant/10">
-          <div className="flex items-center justify-center gap-6 text-[10px] font-black uppercase tracking-widest text-outline">
+        <div className="pt-10 border-t border-outline">
+          <div className="flex flex-wrap items-center justify-center gap-8 text-[9px] font-mono font-black uppercase tracking-[0.2em] text-on-surface-variant opacity-60">
             <span className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-              NVIDIA A100 Active
+              <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+              NVIDIA_A100_LOAD: 92%
             </span>
             <span className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-              HIPAA SECURE
+              <div className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
+              IO_THROUGHPUT: 4.2GB/S
+            </span>
+            <span className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+              ENCRYPTION: SHAKE-256
             </span>
           </div>
         </div>
@@ -88,3 +111,4 @@ export default function Processing() {
     </div>
   );
 }
+

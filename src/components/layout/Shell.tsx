@@ -30,101 +30,116 @@ export default function Shell({ children, currentView, onViewChange }: ShellProp
   ];
 
   return (
-    <div className="flex min-h-screen bg-surface selection:bg-primary-fixed selection:text-primary transition-colors duration-500">
+    <div className="flex min-h-screen bg-surface p-3 gap-3">
       {/* Sidebar */}
-      <aside className="hidden lg:flex flex-col w-64 fixed left-0 top-0 h-screen bg-surface-container-low/70 backdrop-blur-xl border-r border-outline-variant/10 z-50">
-        <div className="p-8">
-          <h2 className="text-lg font-black uppercase tracking-widest text-primary font-headline">Clinical Precision</h2>
+      <aside className={cn(
+        "hidden lg:flex flex-col w-[280px] bg-surface-container shrink-0 border border-outline rounded-xl transition-all duration-500 overflow-hidden",
+        currentView === 'landing' && "w-0 border-none p-0 opacity-0"
+      )}>
+        <div className="p-6 border-b border-outline">
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 border-2 border-primary rounded flex items-center justify-center shadow-[0_0_10px_rgba(0,242,255,0.4)]">
+              <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+            </div>
+            <h2 className="text-sm font-black uppercase tracking-[0.2em] text-on-surface">NeuroSeg</h2>
+          </div>
         </div>
         
-        <nav className="flex-1 px-4 space-y-1">
+        <nav className="flex-1 p-4 space-y-2 mt-4">
           {navItems.filter(item => !item.hidden).map((item) => (
             <button
               key={item.id}
               onClick={() => onViewChange(item.id as View)}
               className={cn(
-                "flex items-center w-full gap-3 px-4 py-3 text-sm font-medium transition-all duration-300 rounded-lg group",
+                "flex items-center w-full gap-4 px-4 py-3 text-xs font-bold uppercase tracking-widest transition-all duration-300 rounded-lg group",
                 currentView === item.id 
-                  ? "bg-white/50 text-primary border-l-4 border-primary shadow-sm" 
-                  : "text-on-surface-variant hover:bg-white/30 hover:translate-x-1"
+                  ? "bg-primary/10 text-primary border border-primary/20 shadow-[inset_0_0_10px_rgba(0,242,255,0.05)]" 
+                  : "text-on-surface-variant hover:bg-white/5 hover:text-on-surface"
               )}
             >
-              <item.icon className={cn("w-5 h-5", currentView === item.id ? "text-primary" : "text-outline")} />
+              <item.icon className={cn("w-4 h-4 transition-transform group-hover:scale-110", currentView === item.id ? "text-primary cyber-glow" : "text-on-surface-variant")} />
               <span>{item.label}</span>
             </button>
           ))}
         </nav>
 
-        <div className="p-4 mt-auto">
-          <div className="p-4 bg-primary rounded-2xl text-white shadow-lg shadow-primary/20">
-            <p className="text-[10px] uppercase font-bold opacity-70 mb-1 tracking-widest">Compute Load</p>
-            <div className="flex items-end justify-between">
-              <span className="text-xl font-bold">88%</span>
-              <BrainCircuit className="w-5 h-5 opacity-50" />
+        <div className="p-6 border-t border-outline">
+          <div className="p-4 bg-surface-container-high rounded-xl border border-outline">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-[9px] font-black uppercase tracking-widest text-on-surface-variant">Model Status</span>
+              <div className="flex gap-1">
+                <div className="w-1 h-1 bg-secondary rounded-full animate-pulse" />
+                <div className="w-1 h-1 bg-secondary rounded-full animate-pulse delay-75" />
+              </div>
             </div>
+            <p className="text-[10px] font-mono text-primary/80">TransUNet_v2.1 :: HYBRID</p>
           </div>
         </div>
       </aside>
 
       {/* Main Content Area */}
-      <div className={cn("flex-1 flex flex-col transition-all duration-500", currentView !== 'landing' && "lg:ml-64")}>
+      <div className="flex-1 flex flex-col gap-3 min-w-0 overflow-hidden">
         {/* Header */}
-        <header className="sticky top-0 z-40 w-full bg-surface/80 backdrop-blur-md border-b border-outline-variant/5 shadow-sm">
-          <div className="flex items-center justify-between px-6 py-3 mx-auto max-w-7xl">
-            <div className="flex items-center gap-4">
-              <div 
-                className="flex items-center gap-2 cursor-pointer"
-                onClick={() => onViewChange('landing')}
-              >
-                <div className="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center">
-                  <BrainCircuit className="w-5 h-5 text-white" />
-                </div>
-                <h1 className="text-xl font-bold text-primary font-headline tracking-tight">NeuroLens AI</h1>
-              </div>
+        <header className="h-[60px] bg-surface-container border border-outline rounded-xl flex items-center justify-between px-6 shrink-0 shadow-lg">
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3 cursor-pointer group" onClick={() => onViewChange('landing')}>
+              <BrainCircuit className="w-5 h-5 text-primary cyber-glow group-hover:scale-110 transition-transform" />
+              <h1 className="text-sm font-black uppercase tracking-[0.3em] text-on-surface">
+                Diagnostic <span className="text-primary font-light">Suite</span>
+              </h1>
             </div>
+            
+            <div className="hidden xl:flex items-center gap-4 pl-6 border-l border-outline">
+              <div className="text-[10px] font-mono text-on-surface-variant">CASE_ID: <span className="text-on-surface">BRA-2023-0882</span></div>
+              <div className="text-[10px] font-mono text-on-surface-variant">MODALITY: <span className="text-on-surface">T1CE, FLAIR, T2</span></div>
+            </div>
+          </div>
 
-            <div className="flex items-center gap-6">
-              <div className="hidden md:flex gap-6 items-center">
-                <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full animate-pulse flex items-center gap-1">
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                  SYSTEM ACTIVE
-                </span>
-                <nav className="flex gap-4">
-                  <button className="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors">Archive</button>
-                  <button className="text-sm font-medium text-on-surface-variant hover:text-primary transition-colors">Patients</button>
-                </nav>
+          <div className="flex items-center gap-6">
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-secondary/10 border border-secondary/20 rounded-full">
+              <div className="w-1.5 h-1.5 rounded-full bg-secondary animate-pulse" />
+              <span className="text-[10px] font-black tracking-widest text-secondary uppercase">Analysis Active</span>
+            </div>
+            
+            <div className="flex items-center gap-4 pl-6 border-l border-outline">
+              <div className="text-right hidden sm:block">
+                <p className="text-[10px] font-black text-on-surface leading-none mb-1 uppercase">Dr. Shjan Abdul</p>
+                <p className="text-[9px] font-mono text-on-surface-variant uppercase">Neurologist</p>
               </div>
-              <div className="flex items-center gap-3 border-l border-outline-variant/20 pl-6">
-                <button className="p-2 text-outline hover:text-primary transition-colors cursor-pointer">
-                  <Settings className="w-5 h-5" />
-                </button>
-                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container/20">
-                  <img 
-                    src="https://picsum.photos/seed/doctor/200/200" 
-                    alt="Clinician" 
-                    className="w-full h-full object-cover"
-                    referrerPolicy="no-referrer"
-                  />
-                </div>
+              <div className="w-8 h-8 rounded border border-primary/30 p-0.5 overflow-hidden bg-primary/10">
+                <img 
+                  src="https://picsum.photos/seed/doc/100/100" 
+                  alt="Doctor" 
+                  className="w-full h-full object-cover filter grayscale"
+                  referrerPolicy="no-referrer"
+                />
               </div>
             </div>
           </div>
         </header>
 
         {/* View Content */}
-        <main className="flex-1">
+        <main className="flex-1 bg-surface-container/30 border border-outline rounded-xl overflow-y-auto custom-scrollbar relative">
           {children}
         </main>
 
         {/* Footer */}
-        <footer className="py-6 border-t border-outline-variant/5 bg-surface-container-low/30">
-          <div className="px-6 mx-auto max-w-7xl flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] uppercase tracking-widest text-outline font-medium">
-            <p>© 2024 Precision Lens Medical AI. All data HIPAA compliant.</p>
-            <div className="flex gap-8">
-              <a href="#" className="hover:text-primary transition-colors">Privacy Protocol</a>
-              <a href="#" className="hover:text-primary transition-colors">FDA Compliance</a>
-              <a href="#" className="hover:text-primary transition-colors">Technical Specs</a>
+        <footer className="h-[60px] bg-surface-container border border-outline rounded-xl flex items-center justify-between px-6 shrink-0">
+          <div className="flex items-center gap-8">
+            <div className="flex items-center gap-2 text-[10px] font-mono text-on-surface-variant uppercase">
+              <ShieldCheck className="w-3 h-3 text-secondary" />
+              HIPAA Compliant Session
             </div>
+            <div className="hidden md:flex items-center gap-4">
+              <div className="h-1 w-12 bg-outline rounded-full overflow-hidden">
+                <div className="h-full w-[80%] bg-primary" />
+              </div>
+              <span className="text-[9px] font-mono text-on-surface-variant">STORAGE: 14.2GB / 20GB</span>
+            </div>
+          </div>
+          <div className="flex gap-6 text-[10px] font-black uppercase tracking-widest text-on-surface-variant">
+            <button className="hover:text-primary transition-colors">Audit Logs</button>
+            <button className="hover:text-primary transition-colors">Specs</button>
           </div>
         </footer>
       </div>
